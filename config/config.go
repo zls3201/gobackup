@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"time"
 
 	"github.com/huacnlee/gobackup/logger"
@@ -78,8 +79,8 @@ func Init(configFile string) {
 
 func loadModel(key string) (model ModelConfig) {
 	model.Name = key
-	model.TempPath = path.Join(viper.GetString("workdir"), fmt.Sprintf("%d", time.Now().UnixNano()))
-	model.DumpPath = path.Join(model.TempPath, key)
+	model.TempPath = filepath.Clean(path.Join(viper.GetString("workdir"), fmt.Sprintf("%d", time.Now().UnixNano())))
+	model.DumpPath = filepath.Clean(path.Join(model.TempPath, key))
 	model.Viper = viper.Sub("models." + key)
 
 	model.CompressWith = SubConfig{

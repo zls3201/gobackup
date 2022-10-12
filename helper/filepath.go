@@ -3,6 +3,7 @@ package helper
 import (
 	"os"
 	"path"
+	fp "path/filepath"
 )
 
 // IsExistsPath check path exist
@@ -32,4 +33,10 @@ func ExplandHome(filePath string) string {
 	}
 
 	return path.Join(os.Getenv("HOME"), filePath[2:])
+}
+
+// ExplandHome ~/foo -> /home/jason/foo
+// ExplandHome /a/b/../c -> /a/c
+func GetAbsPath(filePath string) (string, error) {
+	return fp.Abs(fp.Clean(filePath))
 }

@@ -2,6 +2,7 @@ package model
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/huacnlee/gobackup/archive"
 	"github.com/huacnlee/gobackup/compressor"
@@ -21,6 +22,7 @@ type Model struct {
 func (ctx Model) Perform() {
 	logger.Info("======== " + ctx.Config.Name + " ========")
 	logger.Info("WorkDir:", ctx.Config.DumpPath+"\n")
+	logger.Info("TempPath:", ctx.Config.TempPath+"\n")
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -66,10 +68,10 @@ func (ctx Model) Perform() {
 
 // Cleanup model temp files
 func (ctx Model) cleanup() {
-	logger.Info("Cleanup temp: " + ctx.Config.TempPath + "/\n")
+	logger.Info("Cleanup temp: " + filepath.Clean(ctx.Config.TempPath+"/\n"))
 	err := os.RemoveAll(ctx.Config.TempPath)
 	if err != nil {
-		logger.Error("Cleanup temp dir "+ctx.Config.TempPath+" error:", err)
+		logger.Error("Cleanup temp dir "+filepath.Clean(ctx.Config.TempPath)+" error:", err)
 	}
 	logger.Info("======= End " + ctx.Config.Name + " =======\n\n")
 }

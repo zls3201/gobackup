@@ -3,6 +3,7 @@ package compressor
 import (
 	"os"
 	"path"
+	"path/filepath"
 	"time"
 
 	"github.com/huacnlee/gobackup/config"
@@ -23,7 +24,7 @@ type Context interface {
 }
 
 func (ctx *Base) archiveFilePath(ext string) string {
-	return path.Join(ctx.model.TempPath, time.Now().Format("2006.01.02.15.04.05")+ext)
+	return filepath.Clean(path.Join(ctx.model.TempPath, time.Now().Format("2006.01.02.15.04.05")+ext))
 }
 
 func newBase(model config.ModelConfig) (base Base) {
@@ -45,8 +46,10 @@ func Run(model config.ModelConfig) (archivePath string, err error) {
 		ctx = &Tgz{Base: base}
 	case "tar":
 		ctx = &Tar{Base: base}
+	case "zip":
+		ctx = &ZipA{Base: base}
 	default:
-		ctx = &Tar{}
+		ctx = &ZipA{Base: base}
 	}
 
 	logger.Info("------------ Compressor -------------")
@@ -59,6 +62,7 @@ func Run(model config.ModelConfig) (archivePath string, err error) {
 		return
 	}
 	logger.Info("->", archivePath)
+	logger.Info("success")
 	logger.Info("------------ Compressor -------------\n")
 
 	return

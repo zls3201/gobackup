@@ -1,6 +1,8 @@
 package compressor
 
 import (
+	"path/filepath"
+
 	"github.com/huacnlee/gobackup/helper"
 )
 
@@ -12,11 +14,11 @@ type Tar struct {
 }
 
 func (ctx *Tar) perform() (archivePath string, err error) {
-	filePath := ctx.archiveFilePath(".tar")
+	filePath := filepath.Clean(ctx.archiveFilePath(".tar"))
 
 	opts := ctx.options()
 	opts = append(opts, filePath)
-	opts = append(opts, ctx.name)
+	opts = append(opts, ctx.model.DumpPath)
 
 	_, err = helper.Exec("tar", opts...)
 	if err == nil {
